@@ -28,8 +28,13 @@ func process(list []int) int {
 			break
 		}
 		old := current
-		current += list[current]
-		list[old]++
+		offset := list[current]
+		current += offset
+		if offset >= 3 {
+			list[old]--
+		} else {
+			list[old]++
+		}
 		counter++
 	}
 	return counter
