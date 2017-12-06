@@ -3,19 +3,19 @@ package main
 import "fmt"
 
 func main() {
-	seen := make(map[string]bool)
+	seen := make(map[string]int)
 	input := []int{4, 10, 4, 1, 8, 4, 9, 14, 5, 1, 14, 15, 0, 15, 3, 5}
 
 	i := 0
 	for {
 		cycle(input)
 		i++
-		if _, ok := seen[hash(input)]; ok {
+		if first, ok := seen[hash(input)]; ok {
+			fmt.Println(i - first)
 			break
 		}
-		seen[hash(input)] = true
+		seen[hash(input)] = i
 	}
-	fmt.Println(i)
 }
 
 func hash(input []int) string {
