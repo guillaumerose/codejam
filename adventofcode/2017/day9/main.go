@@ -8,7 +8,9 @@ import (
 
 func main() {
 	bin, _ := ioutil.ReadAll(os.Stdin)
-	fmt.Println(count(filter(string(bin))))
+	input := string(bin)
+	_, skipped := filter(input)
+	fmt.Println(skipped)
 }
 
 func count(input string) int {
@@ -27,10 +29,11 @@ func count(input string) int {
 	return score
 }
 
-func filter(input string) string {
+func filter(input string) (string, int) {
 	output := ""
 	i := 0
-	skip := false
+	skip := 0
+	skipped := 0
 	for i < len(input) {
 		current := string(input[i])
 		// fmt.Println(i, current)
@@ -39,15 +42,18 @@ func filter(input string) string {
 			continue
 		}
 		if current == "<" {
-			skip = true
+			skip += 1
 		}
-		if !skip {
+		if skip == 0 {
 			output += current
 		}
+		if skip > 0 && (skip != 1 || current != "<") && current != ">" {
+			skipped++
+		}
 		if current == ">" {
-			skip = false
+			skip = 0
 		}
 		i++
 	}
-	return output
+	return output, skipped
 }
