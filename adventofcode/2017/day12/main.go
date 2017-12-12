@@ -25,8 +25,24 @@ func main() {
 			}
 		}
 	}
+	count := 0
 	seen := set.New()
-	queue := set.New("0")
+	for seed, _ := range table {
+		current := group(seed, table)
+		if !seen.Has(current.List()[0]) {
+			seen.Add(current.List()...)
+			count++
+		}
+	}
+	fmt.Println(count)
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
+}
+
+func group(seed string, table map[string]*set.Set) *set.Set {
+	seen := set.New()
+	queue := set.New(seed)
 	for queue.Size() > 0 {
 		current := queue.Pop()
 		if seen.Has(current) {
@@ -35,8 +51,5 @@ func main() {
 		seen.Add(current)
 		queue.Add(table[current.(string)].List()...)
 	}
-	fmt.Println(seen.Size())
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "reading standard input:", err)
-	}
+	return seen
 }
