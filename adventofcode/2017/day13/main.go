@@ -1,18 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
 	"os"
 	"strings"
 	"strconv"
+	"fmt"
 )
 
+var fw map[int]int
+var max int
+
 func main() {
-	fw := map[int]int{}
+	fw = make(map[int]int)
 	sign := map[int]int{}
 	state := map[int]int{}
-	max := 0
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		text := scanner.Text()
@@ -27,18 +29,30 @@ func main() {
 		}
 	}
 
-	caught := 0
-	for current := 0; current <= max; current++ {
-		if _, ok := fw[current]; state[current] == 0 && ok {
-			fmt.Printf("Caught: %d\n", current)
-			caught += fw[current] * current
-		}
-		move(state, sign, fw)
-	}
-	fmt.Println(caught)
+	fmt.Println(find(state, sign))
 }
 
-func move(state map[int]int, sign map[int]int, fw map[int]int) {
+func find(state map[int]int, sign map[int]int) int {
+	i := 0
+	packets := map[int]int{}
+	for {
+		packets[i] = 0
+		for start, pos := range packets {
+			if _, ok := fw[pos]; state[pos] == 0 && ok {
+				delete(packets, start)
+			} else {
+				packets[start]++
+				if packets[start] > max {
+					return start
+				}
+			}
+		}
+		move(state, sign)
+		i++
+	}
+}
+
+func move(state map[int]int, sign map[int]int) {
 	for i, _ := range state {
 		if state[i] == 0 {
 			sign[i] = 1
