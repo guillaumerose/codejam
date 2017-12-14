@@ -2,18 +2,70 @@ package main
 
 import (
 	"fmt"
+	"gopkg.in/fatih/set.v0"
 )
 
+type node struct {
+	x, y int
+}
+
 func main() {
-	input := "flqrgnkx"
+	input := "stpzcrnm"
+	matrix := make([][]int, 128)
 	for i := 0; i < 128; i++ {
 		lengths := getInputLengths(fmt.Sprintf("%s-%d", input, i))
 		hashList := generateList(256)
 		doTheHash(hashList, lengths, 64)
 		denseHash := convertToDenseHash(hashList)
 		hex := convertToHex(denseHash)
-		fmt.Println(hex)
+
+		matrix[i] = make([]int, 128)
+		for j, char := range hex {
+			if char == 49 {
+				matrix[i][j] = -1
+			} else {
+				matrix[i][j] = 0
+			}
+		}
+		fmt.Println(matrix[i])
 	}
+
+	fmt.Println("---")
+
+	color := 1
+	for i := 0; i < 128; i++ {
+		for j := 0; j < 128; j++ {
+			if matrix[i][j] == -1 {
+				set := set.New(node{i, j})
+				for !set.IsEmpty() {
+					val := set.Pop().(node)
+					fmt.Println(val)
+					x, y := val.x, val.y
+					if x < 0 || x > 127 {
+						continue
+					}
+					if y < 0 || y > 127 {
+						continue
+					}
+					if matrix[x][y] != -1 {
+						continue
+					}
+					matrix[x][y] = color
+					set.Add(node{x - 1, y})
+					set.Add(node{x + 1, y})
+					set.Add(node{x, y - 1})
+					set.Add(node{x, y + 1})
+				}
+				color++
+			}
+		}
+	}
+
+	for i := 0; i < 128; i++ {
+		fmt.Println(matrix[i])
+	}
+
+	fmt.Println(color - 1)
 }
 
 func mod(number int, length int) int {
