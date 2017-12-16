@@ -11,23 +11,26 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	input := "abcdefghijklmnop"
+
 	for scanner.Scan() {
 		text := scanner.Text()
 		split := strings.Split(text, ",")
-		fmt.Println(split)
-		for _, current := range split {
-			switch string(current[0]) {
-			case "s":
-				i, _ := strconv.Atoi(current[1:])
-				input = spin(input, i)
-			case "x":
-				t := strings.Split(current[1:], "/")
-				x, _ := strconv.Atoi(t[0])
-				y, _ := strconv.Atoi(t[1])
-				input = exch(input, x, y)
-			case "p":
-				t := strings.Split(current[1:], "/")
-				input = partner(input, t[0], t[1])
+		for i := 0; i < 1000000000%60; i++ {
+			fmt.Println(input)
+			for _, current := range split {
+				switch string(current[0]) {
+				case "s":
+					i, _ := strconv.Atoi(current[1:])
+					input = spin(input, i)
+				case "x":
+					t := strings.Split(current[1:], "/")
+					x, _ := strconv.Atoi(t[0])
+					y, _ := strconv.Atoi(t[1])
+					input = exch(input, x, y)
+				case "p":
+					t := strings.Split(current[1:], "/")
+					input = partner(input, t[0], t[1])
+				}
 			}
 		}
 	}
