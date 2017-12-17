@@ -8,11 +8,11 @@ func main() {
 	var t []int
 	t = append(t, 0)
 	current := 0
-	for i := 1; i <= 2017; i++ {
-		current = (current + step) % len(t)
-		t = append(t[:current+1], append([]int{i}, t[current+1:]...)...)
+	for i := 1; i <= 50000000; i++ {
+		current = (current + step) % i
+		if current+1 == 1 {
+			fmt.Println(i)
+		}
 		current++
-		fmt.Println(current, t)
 	}
-	fmt.Println(t[current+1])
 }
